@@ -7,17 +7,37 @@ import {
   Settings,
   List,
   LogOut,
+  Menu,
+  X,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const TeacherDashboard = () => {
   const navigate = useNavigate();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        className="fixed top-4 left-4 p-2 rounded-lg bg-white shadow-lg md:hidden z-50"
+      >
+        {isMobileMenuOpen ? (
+          <X className="h-6 w-6 text-gray-600" />
+        ) : (
+          <Menu className="h-6 w-6 text-gray-600" />
+        )}
+      </button>
+
       {/* Side Navigation */}
-      <nav className="fixed top-0 left-0 h-full w-64 bg-white border-r border-gray-200 p-4">
+      <nav
+        className={`fixed top-0 left-0 h-full w-64 bg-white border-r border-gray-200 p-4 transform transition-transform duration-200 ease-in-out md:translate-x-0 ${
+          isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+        } z-40`}
+      >
         <div className="flex flex-col h-full">
           <div className="flex items-center mb-8">
             <span className="text-xl font-semibold">GradeAssist</span>
@@ -62,17 +82,26 @@ const TeacherDashboard = () => {
         </div>
       </nav>
 
+      {/* Overlay for mobile menu */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Main Content */}
-      <div className="ml-64 p-8">
+      <div className="ml-0 md:ml-64 p-4 md:p-8">
         <div className="max-w-7xl mx-auto">
           <header className="mb-8">
             <h1 className="text-2xl font-semibold text-gray-900">
-              Teacher Dashboard
+              Welcome, Dr. Smith!
             </h1>
+            <p className="text-gray-600 mt-1">Tuesday, March 12, 2024</p>
           </header>
 
           {/* Quick Actions */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
             <motion.div
               whileHover={{ scale: 1.02 }}
               className="neo-card p-6"
@@ -99,6 +128,33 @@ const TeacherDashboard = () => {
               <p className="text-3xl font-bold">87%</p>
               <p className="text-sm text-gray-500">This semester</p>
             </motion.div>
+          </div>
+
+          {/* Task Reminders */}
+          <div className="mb-8 neo-card p-6">
+            <h2 className="text-lg font-semibold mb-4">Task Reminders</h2>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg border border-yellow-100">
+                <div className="flex items-center">
+                  <div className="w-2 h-2 bg-yellow-400 rounded-full mr-3" />
+                  <div>
+                    <p className="font-medium">Grade Final Essays</p>
+                    <p className="text-sm text-gray-500">Due in 2 days</p>
+                  </div>
+                </div>
+                <span className="text-sm text-yellow-600">24 submissions</span>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-100">
+                <div className="flex items-center">
+                  <div className="w-2 h-2 bg-red-400 rounded-full mr-3" />
+                  <div>
+                    <p className="font-medium">Review Midterm Papers</p>
+                    <p className="text-sm text-gray-500">Overdue by 1 day</p>
+                  </div>
+                </div>
+                <span className="text-sm text-red-600">12 pending</span>
+              </div>
+            </div>
           </div>
 
           {/* Recent Assignments Table */}
@@ -145,7 +201,6 @@ const TeacherDashboard = () => {
                       </span>
                     </td>
                   </tr>
-                  {/* Add more rows as needed */}
                 </tbody>
               </table>
             </div>
