@@ -1,10 +1,12 @@
-
 import { useState } from "react";
 import { Moon, Sun, Bell, Lock, UserCircle, ChevronRight } from "lucide-react";
 
 const Settings = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [emailNotifications, setEmailNotifications] = useState(true);
+  const [aiFeedback, setAiFeedback] = useState(true);
+  const [negativeMarking, setNegativeMarking] = useState(false);
+  const [partialCredit, setPartialCredit] = useState(true);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -48,6 +50,88 @@ const Settings = () => {
                     className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm"
                     placeholder="your@email.com"
                   />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Grading Preferences (Teachers Only) */}
+          <div className="bg-white rounded-lg shadow mb-8">
+            <div className="px-4 py-5 sm:p-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">
+                Grading Preferences
+              </h3>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <span className="text-sm text-gray-900">
+                      AI Feedback for Essays
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => setAiFeedback(!aiFeedback)}
+                    className={`${
+                      aiFeedback ? "bg-gray-900" : "bg-gray-200"
+                    } relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out`}
+                  >
+                    <span
+                      className={`${
+                        aiFeedback ? "translate-x-6" : "translate-x-1"
+                      } inline-block h-4 w-4 transform rounded-full bg-white transition duration-200 ease-in-out mt-1`}
+                    />
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <span className="text-sm text-gray-900">
+                      Negative Marking
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => setNegativeMarking(!negativeMarking)}
+                    className={`${
+                      negativeMarking ? "bg-gray-900" : "bg-gray-200"
+                    } relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out`}
+                  >
+                    <span
+                      className={`${
+                        negativeMarking ? "translate-x-6" : "translate-x-1"
+                      } inline-block h-4 w-4 transform rounded-full bg-white transition duration-200 ease-in-out mt-1`}
+                    />
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <span className="text-sm text-gray-900">
+                      Partial Credit
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => setPartialCredit(!partialCredit)}
+                    className={`${
+                      partialCredit ? "bg-gray-900" : "bg-gray-200"
+                    } relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out`}
+                  >
+                    <span
+                      className={`${
+                        partialCredit ? "translate-x-6" : "translate-x-1"
+                      } inline-block h-4 w-4 transform rounded-full bg-white transition duration-200 ease-in-out mt-1`}
+                    />
+                  </button>
+                </div>
+
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Default Rubric Template
+                  </label>
+                  <select className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm rounded-md">
+                    <option>Standard Essay Grading</option>
+                    <option>Technical Writing</option>
+                    <option>Research Paper</option>
+                    <option>Creative Writing</option>
+                  </select>
                 </div>
               </div>
             </div>
