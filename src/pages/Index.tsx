@@ -1,4 +1,3 @@
-
 import {
   Upload,
   Settings,
@@ -185,8 +184,8 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Recent Activities */}
-      <section className="py-24 bg-gray-50">
+      {/* Recent Activities Section (For Students) */}
+      <section className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4">
           <h2 className="text-3xl font-semibold mb-8">Recent Activities</h2>
           <div className="overflow-x-auto">
@@ -201,10 +200,7 @@ const Index = () => {
               </thead>
               <tbody>
                 {recentActivities.map((activity, index) => (
-                  <tr
-                    key={index}
-                    className="hover:bg-gray-50 transition-colors"
-                  >
+                  <tr key={index} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4">{activity.name}</td>
                     <td className="px-6 py-4">{activity.date}</td>
                     <td className="px-6 py-4">
@@ -221,8 +217,8 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Performance Trends */}
-      <section className="py-24">
+      {/* Performance Trends Section (For Students) */}
+      <section className="py-12">
         <div className="max-w-7xl mx-auto px-4">
           <h2 className="text-3xl font-semibold mb-8">Performance Trends</h2>
           <div className="h-[400px] neo-card p-6">
