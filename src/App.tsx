@@ -27,7 +27,7 @@ const App = () => (
           <Route
             path="/teacher"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["teacher"]}>
                 <TeacherDashboard />
               </ProtectedRoute>
             }
@@ -35,7 +35,7 @@ const App = () => (
           <Route
             path="/teacher/exam/create"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["teacher"]}>
                 <ExamCreation />
               </ProtectedRoute>
             }
@@ -43,7 +43,7 @@ const App = () => (
           <Route
             path="/student"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["student"]}>
                 <StudentDashboard />
               </ProtectedRoute>
             }

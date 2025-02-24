@@ -1,24 +1,36 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { LogIn, UserCheck, ChevronRight } from "lucide-react";
-import { SignIn, SignUp, useAuth } from "@clerk/clerk-react";
-import { useEffect } from "react";
+import { SignIn, SignUp, useAuth, useUser } from "@clerk/clerk-react";
+import { toast } from "sonner";
 
 const Login = () => {
   const [isRegistering, setIsRegistering] = useState(false);
   const navigate = useNavigate();
   const { isLoaded, userId, sessionId } = useAuth();
+  const { user } = useUser();
 
   // Redirect if already logged in
   useEffect(() => {
     if (isLoaded && (userId || sessionId)) {
-      // We'll implement role-based redirection here
-      // For now, redirect to student dashboard
-      navigate("/student");
+      const userRole = user?.publicMetadata?.role as string;
+      
+      // Redirect based on role
+      if (userRole === "teacher") {
+        navigate("/teacher");
+        toast.success("Welcome back, Teacher!");
+      } else if (userRole === "student") {
+        navigate("/student");
+        toast.success("Welcome back, Student!");
+      } else {
+        // If no role is set, we'll treat them as a student by default
+        navigate("/student");
+        toast.success("Welcome back!");
+      }
     }
-  }, [isLoaded, userId, sessionId, navigate]);
+  }, [isLoaded, userId, sessionId, navigate, user]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -60,7 +72,7 @@ const Login = () => {
                   "w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500",
               },
             }}
-            redirectUrl="/student"
+            redirectUrl="/login"
           />
         )}
 
