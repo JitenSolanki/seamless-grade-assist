@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -7,10 +6,10 @@ import {
   GraduationCap,
   Plus,
   Save,
-  Send,
   Trash2,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios"; // Import axios
 
 type QuestionType = "mcq" | "essay" | "trueFalse";
 type ExamType = "multipleChoice" | "essay" | "both";
@@ -32,6 +31,12 @@ const ExamCreation = () => {
   const [currentQuestionType, setCurrentQuestionType] =
     useState<QuestionType>("mcq");
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [examTitle, setExamTitle] = useState<string>("");
+  const [duration, setDuration] = useState<number>(60);
+  const [maxMarks, setMaxMarks] = useState<number>(100);
+  const [startDate, setStartDate] = useState<string>("");
+  const [dueDate, setDueDate] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
 
   const [currentQuestion, setCurrentQuestion] = useState<Question>({
     id: crypto.randomUUID(),
@@ -54,6 +59,30 @@ const ExamCreation = () => {
 
   const handleRemoveQuestion = (id: string) => {
     setQuestions(questions.filter((q) => q.id !== id));
+  };
+
+  // Function to handle the publish exam logic
+  const handlePublishExam = async () => {
+    const examData = {
+      title: examTitle,
+      examType: examType,
+      duration: duration,
+      maxMarks: maxMarks,
+      startDate: startDate,
+      dueDate: dueDate,
+      description: description,
+      questions: questions,
+    };
+
+    try {
+      console.log(examData);
+      const response = await axios.post("http://localhost:5000/api/exams", examData); // Your backend URL
+      console.log("Exam created successfully:", response.data);
+      // Optionally navigate to another page or show a success message
+      navigate("/exam-dashboard"); // Navigate to the exam dashboard after success
+    } catch (error) {
+      console.error("Error creating exam:", error.response?.data || error);
+    }
   };
 
   return (
@@ -83,6 +112,8 @@ const ExamCreation = () => {
                 <input
                   type="text"
                   id="examTitle"
+                  value={examTitle}
+                  onChange={(e) => setExamTitle(e.target.value)}
                   className="w-full rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500"
                   placeholder="e.g., Midterm Exam"
                 />
@@ -119,6 +150,8 @@ const ExamCreation = () => {
                   <input
                     type="number"
                     id="duration"
+                    value={duration}
+                    onChange={(e) => setDuration(Number(e.target.value))}
                     className="w-full pl-10 rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500"
                     placeholder="60"
                     min="1"
@@ -138,6 +171,8 @@ const ExamCreation = () => {
                   <input
                     type="number"
                     id="maxMarks"
+                    value={maxMarks}
+                    onChange={(e) => setMaxMarks(Number(e.target.value))}
                     className="w-full pl-10 rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500"
                     placeholder="100"
                     min="0"
@@ -157,6 +192,8 @@ const ExamCreation = () => {
                   <input
                     type="date"
                     id="startDate"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
                     className="w-full pl-10 rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500"
                   />
                 </div>
@@ -174,6 +211,8 @@ const ExamCreation = () => {
                   <input
                     type="date"
                     id="dueDate"
+                    value={dueDate}
+                    onChange={(e) => setDueDate(e.target.value)}
                     className="w-full pl-10 rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500"
                   />
                 </div>
@@ -189,6 +228,8 @@ const ExamCreation = () => {
                 <textarea
                   id="description"
                   rows={4}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
                   className="w-full rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500"
                   placeholder="Enter exam instructions and additional notes..."
                 />
@@ -248,96 +289,205 @@ const ExamCreation = () => {
               </div>
             </div>
 
-            {/* Question Form */}
+            {/* Question Fields */}
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                  htmlFor="questionText"
+                >
                   Question Text
                 </label>
                 <textarea
+                  id="questionText"
+                  rows={4}
                   value={currentQuestion.text}
                   onChange={(e) =>
-                    setCurrentQuestion({
-                      ...currentQuestion,
-                      text: e.target.value,
-                    })
+                    setCurrentQuestion({ ...currentQuestion, text: e.target.value })
                   }
                   className="w-full rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500"
-                  rows={3}
-                  placeholder="Enter your question here..."
+                  placeholder="Enter question text..."
                 />
               </div>
 
-              {currentQuestionType === "mcq" && (
-                <div className="space-y-3">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Options
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <div>
+                  <label
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                    htmlFor="marks"
+                  >
+                    Marks
                   </label>
-                  {currentQuestion.options?.map((option, index) => (
-                    <input
-                      key={index}
-                      type="text"
-                      value={option}
-                      onChange={(e) => {
-                        const newOptions = [...(currentQuestion.options || [])];
-                        newOptions[index] = e.target.value;
-                        setCurrentQuestion({
-                          ...currentQuestion,
-                          options: newOptions,
-                        });
-                      }}
-                      className="w-full rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500"
-                      placeholder={`Option ${String.fromCharCode(65 + index)}`}
-                    />
-                  ))}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Correct Answer
-                    </label>
-                    <select
-                      value={currentQuestion.correctAnswer}
-                      onChange={(e) =>
-                        setCurrentQuestion({
-                          ...currentQuestion,
-                          correctAnswer: e.target.value,
-                        })
-                      }
-                      className="w-full rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500"
-                    >
-                      <option value="">Select correct answer</option>
-                      <option value="A">Option A</option>
-                      <option value="B">Option B</option>
-                      <option value="C">Option C</option>
-                      <option value="D">Option D</option>
-                    </select>
-                  </div>
+                  <input
+                    type="number"
+                    id="marks"
+                    value={currentQuestion.marks}
+                    onChange={(e) =>
+                      setCurrentQuestion({ ...currentQuestion, marks: Number(e.target.value) })
+                    }
+                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500"
+                  />
                 </div>
-              )}
 
-              {currentQuestionType === "essay" && (
-                <div className="space-y-4">
+                {currentQuestionType === "mcq" && (
+                  <>
+                    <div>
+                      <label
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                        htmlFor="optionA"
+                      >
+                        Option A
+                      </label>
+                      <input
+                        type="text"
+                        value={currentQuestion.options[0]}
+                        onChange={(e) =>
+                          setCurrentQuestion({
+                            ...currentQuestion,
+                            options: [
+                              e.target.value,
+                              currentQuestion.options[1],
+                              currentQuestion.options[2],
+                              currentQuestion.options[3],
+                            ],
+                          })
+                        }
+                        className="w-full rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                        htmlFor="optionB"
+                      >
+                        Option B
+                      </label>
+                      <input
+                        type="text"
+                        value={currentQuestion.options[1]}
+                        onChange={(e) =>
+                          setCurrentQuestion({
+                            ...currentQuestion,
+                            options: [
+                              currentQuestion.options[0],
+                              e.target.value,
+                              currentQuestion.options[2],
+                              currentQuestion.options[3],
+                            ],
+                          })
+                        }
+                        className="w-full rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                        htmlFor="optionC"
+                      >
+                        Option C
+                      </label>
+                      <input
+                        type="text"
+                        value={currentQuestion.options[2]}
+                        onChange={(e) =>
+                          setCurrentQuestion({
+                            ...currentQuestion,
+                            options: [
+                              currentQuestion.options[0],
+                              currentQuestion.options[1],
+                              e.target.value,
+                              currentQuestion.options[3],
+                            ],
+                          })
+                        }
+                        className="w-full rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                        htmlFor="optionD"
+                      >
+                        Option D
+                      </label>
+                      <input
+                        type="text"
+                        value={currentQuestion.options[3]}
+                        onChange={(e) =>
+                          setCurrentQuestion({
+                            ...currentQuestion,
+                            options: [
+                              currentQuestion.options[0],
+                              currentQuestion.options[1],
+                              currentQuestion.options[2],
+                              e.target.value,
+                            ],
+                          })
+                        }
+                        className="w-full rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                        htmlFor="correctAnswer"
+                      >
+                        Correct Answer
+                      </label>
+                      <input
+                        type="text"
+                        id="correctAnswer"
+                        value={currentQuestion.correctAnswer || ""}
+                        onChange={(e) =>
+                          setCurrentQuestion({
+                            ...currentQuestion,
+                            correctAnswer: e.target.value,
+                          })
+                        }
+                        className="w-full rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500"
+                      />
+                    </div>
+                  </>
+                )}
+
+                {currentQuestionType === "essay" && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                      htmlFor="wordLimit"
+                    >
                       Word Limit
                     </label>
                     <input
                       type="number"
-                      value={currentQuestion.wordLimit || ""}
+                      id="wordLimit"
+                      value={currentQuestion.wordLimit || 0}
                       onChange={(e) =>
                         setCurrentQuestion({
                           ...currentQuestion,
-                          wordLimit: parseInt(e.target.value),
+                          wordLimit: Number(e.target.value),
                         })
                       }
                       className="w-full rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500"
-                      placeholder="Enter word limit (optional)"
                     />
                   </div>
+                )}
+
+                {currentQuestionType === "trueFalse" && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Grading Rubrics
+                    <label
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                      htmlFor="rubrics"
+                    >
+                      Rubrics
                     </label>
-                    <textarea
+                    <input
+                      type="text"
+                      id="rubrics"
                       value={currentQuestion.rubrics || ""}
                       onChange={(e) =>
                         setCurrentQuestion({
@@ -346,114 +496,30 @@ const ExamCreation = () => {
                         })
                       }
                       className="w-full rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500"
-                      rows={4}
-                      placeholder="Enter grading criteria (e.g., grammar: 10 points, content: 20 points)"
                     />
                   </div>
-                </div>
-              )}
-
-              {currentQuestionType === "trueFalse" && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Correct Answer
-                  </label>
-                  <select
-                    value={currentQuestion.correctAnswer}
-                    onChange={(e) =>
-                      setCurrentQuestion({
-                        ...currentQuestion,
-                        correctAnswer: e.target.value,
-                      })
-                    }
-                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500"
-                  >
-                    <option value="">Select correct answer</option>
-                    <option value="true">True</option>
-                    <option value="false">False</option>
-                  </select>
-                </div>
-              )}
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Marks
-                </label>
-                <input
-                  type="number"
-                  value={currentQuestion.marks}
-                  onChange={(e) =>
-                    setCurrentQuestion({
-                      ...currentQuestion,
-                      marks: parseInt(e.target.value),
-                    })
-                  }
-                  className="w-full rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500"
-                  placeholder="Enter marks for this question"
-                  min="0"
-                />
+                )}
               </div>
 
               <button
+                type="button"
                 onClick={handleAddQuestion}
-                className="w-full flex items-center justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                className="mt-6 inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
               >
-                <Plus className="h-5 w-5 mr-2" />
+                <Plus className="mr-2 h-4 w-4" />
                 Add Question
               </button>
             </div>
           </div>
 
-          {/* Added Questions List */}
-          {questions.length > 0 && (
-            <div className="bg-white shadow rounded-lg p-6">
-              <h2 className="text-xl font-semibold mb-6">Added Questions</h2>
-              <div className="space-y-4">
-                {questions.map((question, index) => (
-                  <motion.div
-                    key={question.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="p-4 border rounded-lg"
-                  >
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <span className="text-sm font-medium text-gray-500">
-                          Question {index + 1} ({question.type.toUpperCase()})
-                        </span>
-                        <p className="mt-1">{question.text}</p>
-                      </div>
-                      <button
-                        onClick={() => handleRemoveQuestion(question.id)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <Trash2 className="h-5 w-5" />
-                      </button>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Action Buttons */}
-          <div className="flex gap-4">
+          {/* Publish Button */}
+          <div className="flex justify-end mt-8">
             <button
-              onClick={() => {
-                /* Save as draft logic */
-              }}
-              className="flex-1 inline-flex justify-center items-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+              type="button"
+              onClick={handlePublishExam}
+              className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700"
             >
-              <Save className="h-5 w-5 mr-2" />
-              Save Draft
-            </button>
-            <button
-              onClick={() => {
-                /* Publish exam logic */
-              }}
-              className="flex-1 inline-flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-            >
-              <Send className="h-5 w-5 mr-2" />
+              <Save className="mr-2 h-5 w-5" />
               Publish Exam
             </button>
           </div>

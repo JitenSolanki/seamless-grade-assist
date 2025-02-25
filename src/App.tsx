@@ -11,6 +11,7 @@ import ExamCreation from "./pages/teacher/ExamCreation";
 import StudentDashboard from "./pages/student/Dashboard";
 import Settings from "./pages/settings/Settings";
 import NotFound from "./pages/NotFound";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -23,10 +24,38 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/teacher" element={<TeacherDashboard />} />
-          <Route path="/teacher/exam/create" element={<ExamCreation />} />
-          <Route path="/student" element={<StudentDashboard />} />
-          <Route path="/settings" element={<Settings />} />
+          <Route
+            path="/teacher"
+            element={
+              <ProtectedRoute allowedRoles={["teacher"]}>
+                <TeacherDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/teacher/exam/create"
+            element={
+              <ProtectedRoute allowedRoles={["teacher"]}>
+                <ExamCreation />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/student"
+            element={
+              <ProtectedRoute allowedRoles={["student"]}>
+                <StudentDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute>
+                <Settings />
+              </ProtectedRoute>
+            }
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
