@@ -40,14 +40,19 @@
     "@radix-ui/react-toggle-group": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.4",
     "@tanstack/react-query": "^5.56.2",
+    "axios": "^1.7.9",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
+    "cors": "^2.8.5",
     "date-fns": "^3.6.0",
+    "dotenv": "^16.4.7",
     "embla-carousel-react": "^8.3.0",
+    "express": "^4.21.2",
     "framer-motion": "^12.4.7",
     "input-otp": "^1.2.4",
     "lucide-react": "^0.462.0",
+    "mongoose": "^8.10.1",
     "next-themes": "^0.3.0",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
@@ -80,5 +85,18 @@
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.1"
-  }
+  },
+  "description": "**URL**: https://lovable.dev/projects/eca87e5e-c6f2-498d-9b72-9e5788df20b7",
+  "main": "eslint.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JitenSolanki/seamless-grade-assist.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JitenSolanki/seamless-grade-assist/issues"
+  },
+  "homepage": "https://github.com/JitenSolanki/seamless-grade-assist#readme"
 }
