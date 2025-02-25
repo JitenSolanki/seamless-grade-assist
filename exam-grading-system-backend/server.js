@@ -24,11 +24,19 @@ mongoose.connect("mongodb://localhost:27017/examGradingSystem")
 const examRoutes = require("./routes/examRoutes");
 app.use("/api/exams", examRoutes);
 
+
+// Create a new exam
+app.post("/api/exams", async (req, res) => {
+  try {
+    const exam = new Exam(req.body);
+    await exam.save();
+    res.status(201).json({ message: "Exam created successfully", exam });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Start Server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
-
-
-// aa file atlij chhe ?
-// haa

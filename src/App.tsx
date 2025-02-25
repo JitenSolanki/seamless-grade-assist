@@ -27,33 +27,25 @@ const App = () => (
           <Route
             path="/teacher"
             element={
-              <ProtectedRoute allowedRoles={["teacher"]}>
                 <TeacherDashboard />
-              </ProtectedRoute>
             }
           />
           <Route
             path="/teacher/exam/create"
             element={
-              <ProtectedRoute allowedRoles={["teacher"]}>
                 <ExamCreation />
-              </ProtectedRoute>
             }
           />
           <Route
             path="/student"
             element={
-              <ProtectedRoute allowedRoles={["student"]}>
                 <StudentDashboard />
-              </ProtectedRoute>
             }
           />
           <Route
             path="/settings"
             element={
-              <ProtectedRoute>
                 <Settings />
-              </ProtectedRoute>
             }
           />
           <Route path="*" element={<NotFound />} />

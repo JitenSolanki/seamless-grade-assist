@@ -79,7 +79,7 @@ const ExamCreation = () => {
       const response = await axios.post("http://localhost:5000/api/exams", examData); // Your backend URL
       console.log("Exam created successfully:", response.data);
       // Optionally navigate to another page or show a success message
-      navigate("/exam-dashboard"); // Navigate to the exam dashboard after success
+      navigate("/teacher"); // Navigate to the exam dashboard after success
     } catch (error) {
       console.error("Error creating exam:", error.response?.data || error);
     }

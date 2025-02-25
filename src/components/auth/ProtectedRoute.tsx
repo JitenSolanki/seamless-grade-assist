@@ -13,7 +13,7 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
   const { user } = useUser();
 
   if (!isLoaded) {
-    return <div>Loading...</div>;
+    return <div>Loading hello here...</div>;
   }
 
   if (!userId && !sessionId) {
