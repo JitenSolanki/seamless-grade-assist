@@ -2,35 +2,45 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { LogIn, UserCheck, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { SignIn, SignUp, useAuth, useUser } from "@clerk/clerk-react";
 import { toast } from "sonner";
 
 const Login = () => {
   const [isRegistering, setIsRegistering] = useState(false);
   const navigate = useNavigate();
-  const { isLoaded, userId, sessionId } = useAuth();
+  const { isLoaded, userId } = useAuth();
   const { user } = useUser();
 
-  // Redirect if already logged in
   useEffect(() => {
-    if (isLoaded && (userId || sessionId)) {
-      const userRole = user?.publicMetadata?.role as string;
+    if (isLoaded && userId && user) {
+      const selectedRole = localStorage.getItem("selectedRole");
       
-      // Redirect based on role
-      if (userRole === "teacher") {
-        navigate("/teacher");
-        toast.success("Welcome back, Teacher!");
-      } else if (userRole === "student") {
-        navigate("/student");
-        toast.success("Welcome back, Student!");
+      if (selectedRole) {
+        // Set the user's role in Clerk metadata
+        user.update({
+          publicMetadata: { role: selectedRole },
+        }).then(() => {
+          localStorage.removeItem("selectedRole");
+          navigate(selectedRole === "teacher" ? "/teacher" : "/student");
+          toast.success(`Welcome! You're logged in as a ${selectedRole}`);
+        }).catch((error) => {
+          console.error("Error updating user role:", error);
+          toast.error("There was an error setting up your account");
+        });
       } else {
-        // If no role is set, we'll treat them as a student by default
-        navigate("/student");
-        toast.success("Welcome back!");
+        // If no role selected, check existing role
+        const userRole = user.publicMetadata?.role as string;
+        if (userRole) {
+          navigate(userRole === "teacher" ? "/teacher" : "/student");
+          toast.success("Welcome back!");
+        } else {
+          navigate("/");
+          toast.error("Please select your role first");
+        }
       }
     }
-  }, [isLoaded, userId, sessionId, navigate, user]);
+  }, [isLoaded, userId, navigate, user]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
