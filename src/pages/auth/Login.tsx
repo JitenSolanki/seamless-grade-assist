@@ -17,9 +17,10 @@ const Login = () => {
       const selectedRole = localStorage.getItem("selectedRole");
       
       if (selectedRole) {
-        // Set the user's role in Clerk metadata
+        // Set the user's role using the correct method
+        const metadata = { ...user.publicMetadata, role: selectedRole };
         user.update({
-          publicMetadata: { role: selectedRole },
+          unsafeMetadata: metadata
         }).then(() => {
           localStorage.removeItem("selectedRole");
           navigate(selectedRole === "teacher" ? "/teacher" : "/student");

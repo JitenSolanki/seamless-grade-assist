@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth, useUser } from "@clerk/clerk-react";
 import { motion } from "framer-motion";
-import { GraduationCap, ChalkBoard } from "lucide-react";
+import { GraduationCap, Chalkboard } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -71,7 +71,7 @@ const Index = () => {
             onClick={() => handleRoleSelect("teacher")}
             className="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
           >
-            <ChalkBoard className="h-12 w-12 text-green-500 mb-4" />
+            <Chalkboard className="h-12 w-12 text-green-500 mb-4" />
             <h2 className="text-xl font-semibold text-gray-900">Teacher</h2>
             <p className="text-sm text-gray-500 mt-2">Manage your classes</p>
           </motion.button>
